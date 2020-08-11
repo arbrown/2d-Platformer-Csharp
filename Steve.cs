@@ -3,15 +3,27 @@ using System;
 
 public class Steve : KinematicBody2D
 {
-	private Vector2 velocity;
+	const int SPEED = 180;
+	const int GRAVITY = 35;
+	const int JUMPFORCE = -1100;
+    
+    private Vector2 velocity;
 	public override void _PhysicsProcess(float delta) {
 		if (Input.IsActionPressed("right")) {
-			velocity.x = 100;
+			velocity.x = SPEED;
 		}
 		else if (Input.IsActionPressed("left")) {
-			velocity.x = -100;
+			velocity.x = -SPEED;
 		}
-		MoveAndSlide(velocity);
+
+		if (Input.IsActionJustPressed("jump") && IsOnFloor()) {
+			velocity.y = JUMPFORCE;
+		}
+
+		velocity.y += 30;
+
+		velocity = MoveAndSlide(velocity, Vector2.Up);
+
 		velocity.x = Mathf.Lerp(velocity.x, 0, 0.2f); // Need to specify that the final parameter is a float
 	}
 }

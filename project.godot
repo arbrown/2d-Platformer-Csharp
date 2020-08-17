@@ -38,6 +38,10 @@ jump={
  ]
 }
 
+[mono]
+
+debugger_agent/wait_timeout=8000
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"

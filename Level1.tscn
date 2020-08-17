@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://world_tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://Steve.tscn" type="PackedScene" id=2]
@@ -11,6 +11,9 @@ extents = Vector2( 128, 16 )
 
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 320, 16 )
+
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 2416, 40 )
 
 [node name="Level1" type="Node2D"]
 
@@ -67,7 +70,6 @@ centered = false
 
 [node name="back Blocks" type="ParallaxLayer" parent="ParallaxBackground"]
 modulate = Color( 0.611765, 0.337255, 0.337255, 0.345098 )
-scale = Vector2( 4, 4 )
 motion_scale = Vector2( 0.25, 0.25 )
 motion_offset = Vector2( 0, -500 )
 motion_mirroring = Vector2( 2560, 1920 )
@@ -97,3 +99,13 @@ motion_mirroring = Vector2( 1120, 840 )
 scale = Vector2( 1.75, 1.75 )
 texture = ExtResource( 5 )
 centered = false
+
+[node name="fallzone" type="Area2D" parent="."]
+position = Vector2( 1688, 784 )
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="fallzone"]
+shape = SubResource( 3 )
+[connection signal="body_entered" from="fallzone" to="Steve" method="_on_fallzone_body_entered"]

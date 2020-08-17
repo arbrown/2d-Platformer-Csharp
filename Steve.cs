@@ -45,4 +45,12 @@ public class Steve : KinematicBody2D
 
 		velocity.x = Mathf.Lerp(velocity.x, 0, 0.2f); // Need to specify that the final parameter is a float
 	}
+	
+	private void _on_fallzone_body_entered(object body)
+	{
+		GetTree().ChangeScene("res://Level1.tscn");
+	}
 }
+
+
+

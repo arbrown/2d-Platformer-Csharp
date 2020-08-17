@@ -3,7 +3,7 @@ using System;
 
 public class Steve : KinematicBody2D
 {
-	const int SPEED = 180;
+	const int SPEED = 270;
 	const int GRAVITY = 35;
 	const int JUMPFORCE = -1100;
 

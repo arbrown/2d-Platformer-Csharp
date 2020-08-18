@@ -4,20 +4,19 @@ using System;
 public class coin : Area2D
 {
 
-	private void _on_coin_body_entered(object body)
-	{
-		GetNode<AnimationPlayer>("AnimationPlayer").Play("bounce");
+    [Signal]
+    public delegate void CoinCollected();
 
-		var steve = body as Steve;
+    private void _on_coin_body_entered(object body)
+    {
+        GetNode<AnimationPlayer>("AnimationPlayer").Play("bounce");
+        EmitSignal("CoinCollected");
 
-		if (steve != null)
-		{
-			steve.AddCoin();
-		}
-	}
-	private void _on_AnimationPlayer_animation_finished(String anim_name)
-	{
-		QueueFree();
-	}
+        SetCollisionMaskBit(0, false);
+    }
+    private void _on_AnimationPlayer_animation_finished(String anim_name)
+    {
+        QueueFree();
+    }
 }
 

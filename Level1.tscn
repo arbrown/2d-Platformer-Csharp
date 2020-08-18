@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://world_tileset.tres" type="TileSet" id=1]
 [ext_resource path="res://Steve.tscn" type="PackedScene" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://ASSETS/background/set2_background.png" type="Texture" id=4]
 [ext_resource path="res://ASSETS/background/set2_tiles.png" type="Texture" id=5]
 [ext_resource path="res://coin.tscn" type="PackedScene" id=6]
+[ext_resource path="res://ASSETS/HUD/coin_gold.png" type="Texture" id=7]
+[ext_resource path="res://ASSETS/fonts/BalsamiqSans-Bold.ttf" type="DynamicFontData" id=8]
+[ext_resource path="res://HUD.cs" type="Script" id=9]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 128, 16 )
@@ -15,6 +18,21 @@ extents = Vector2( 320, 16 )
 
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 2416, 40 )
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0, 0, 0, 0.196078 )
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="DynamicFont" id=5]
+size = 52
+font_data = ExtResource( 8 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 60
+font_data = ExtResource( 8 )
 
 [node name="Level1" type="Node2D"]
 
@@ -116,27 +134,81 @@ __meta__ = {
 [node name="CollisionShape2D" type="CollisionShape2D" parent="fallzone"]
 shape = SubResource( 3 )
 
-[node name="coin" parent="." instance=ExtResource( 6 )]
+[node name="coins" type="Node2D" parent="."]
+
+[node name="coin1" parent="coins" instance=ExtResource( 6 )]
 position = Vector2( 864, 272 )
 
-[node name="coin2" parent="." instance=ExtResource( 6 )]
-position = Vector2( 1264, 144 )
+[node name="coin2" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 1320, 144 )
 
-[node name="coin3" parent="." instance=ExtResource( 6 )]
-position = Vector2( 1744, 464 )
+[node name="coin3" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 1776, 464 )
 
-[node name="coin4" parent="." instance=ExtResource( 6 )]
-position = Vector2( 2312, 208 )
-
-[node name="coin5" parent="." instance=ExtResource( 6 )]
+[node name="coin4" parent="coins" instance=ExtResource( 6 )]
 position = Vector2( 1944, -48 )
 
-[node name="coin6" parent="." instance=ExtResource( 6 )]
-position = Vector2( 1696, -576 )
+[node name="coin5" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 2312, 208 )
 
-[node name="coin7" parent="." instance=ExtResource( 6 )]
-position = Vector2( 656, -824 )
+[node name="coin6" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 2352, -176 )
 
-[node name="coin8" parent="." instance=ExtResource( 6 )]
-position = Vector2( 2088, -440 )
+[node name="coin7" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 1696, -560 )
+
+[node name="coin8" parent="coins" instance=ExtResource( 6 )]
+position = Vector2( 288, -816 )
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource( 9 )
+
+[node name="Panel" type="Panel" parent="HUD"]
+margin_left = 40.0
+margin_top = 32.0
+margin_right = 264.0
+margin_bottom = 120.0
+custom_styles/panel = SubResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Panel"]
+margin_left = 16.0
+margin_top = 8.0
+margin_right = 88.0
+margin_bottom = 80.0
+texture = ExtResource( 7 )
+expand = true
+
+[node name="x" type="Label" parent="HUD/Panel"]
+margin_left = 94.5842
+margin_top = 1.86482
+margin_right = 134.584
+margin_bottom = 79.8648
+custom_fonts/font = SubResource( 5 )
+custom_colors/font_color = Color( 0.898039, 0.717647, 0, 1 )
+text = "x"
+valign = 1
+
+[node name="Coins" type="Label" parent="HUD"]
+margin_left = 168.0
+margin_top = 40.0
+margin_right = 246.0
+margin_bottom = 112.0
+custom_fonts/font = SubResource( 6 )
+custom_colors/font_color = Color( 0.898039, 0.717647, 0, 1 )
+text = "##"
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
 [connection signal="body_entered" from="fallzone" to="Steve" method="_on_fallzone_body_entered"]
+[connection signal="CoinCollected" from="coins/coin1" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin2" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin3" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin4" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin5" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin6" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin7" to="HUD" method="_on_CoinCollected"]
+[connection signal="CoinCollected" from="coins/coin8" to="HUD" method="_on_CoinCollected"]

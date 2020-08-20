@@ -16,18 +16,15 @@ public class HUD : CanvasLayer
 
 	}
 
-	public override void _PhysicsProcess(float delta)
-	{
-		if (coins == 3)
-		{
-			GetTree().ChangeScene("res://Level1.tscn");
-		}
-	}
 
 	private void _on_CoinCollected()
 	{
 		coins++;
 		_Ready();
+		if (coins == 3)
+		{
+			GetTree().ChangeScene("res://YouWin.tscn");
+		}
 	}
 
 

@@ -51,7 +51,7 @@ public class Steve : KinematicBody2D
 
 	private void _on_fallzone_body_entered(object body)
 	{
-		GetTree().ChangeScene("res://Level1.tscn");
+		GetTree().ChangeScene("res://GameOver.tscn");
 	}
 
 	public void AddCoin()
@@ -85,7 +85,7 @@ public class Steve : KinematicBody2D
 
 	private void _on_Timer_timeout()
 	{
-		GetTree().ChangeScene("res://Level1.tscn");
+		GetTree().ChangeScene("res://GameOver.tscn");
 	}
 }
 

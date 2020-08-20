@@ -10,6 +10,8 @@ public class Enemy : KinematicBody2D
 	[Export]
 	private int direction = -1;
 
+	private int speed = 50;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
@@ -31,6 +33,11 @@ public class Enemy : KinematicBody2D
 				var rect = GetNode<CollisionShape2D>("CollisionShape2D").Shape as RectangleShape2D;
 				pos.x = (float)rect?.Extents.x * direction;
 				floorChecker.Position = pos;
+			}
+
+			if (detectsCliffs)
+			{
+				Modulate = new Color(1.2F, 0.5F, 1);
 			}
 
 		}
@@ -61,9 +68,47 @@ public class Enemy : KinematicBody2D
 
 		velocity.y += 20;
 
-		velocity.x = direction * 50;
+		velocity.x = direction * speed;
 
 		velocity = MoveAndSlide(velocity, Vector2.Up);
 
 	}
+
+	private void _on_TopChecker_body_entered(object body)
+	{
+		speed = 0;
+		// A little less careful with null checking  :)
+		GetNode<AnimatedSprite>("AnimatedSprite").Play("squashed");
+		SetCollisionLayerBit(4, false);
+		SetCollisionMaskBit(0, false);
+		GetNode<Area2D>("TopChecker").SetCollisionLayerBit(4, false);
+		GetNode<Area2D>("TopChecker").SetCollisionMaskBit(0, false);
+		GetNode<Area2D>("SidesChecker").SetCollisionLayerBit(4, false);
+		GetNode<Area2D>("SidesChecker").SetCollisionMaskBit(0, false);
+		GetNode<Timer>("Timer").Start();
+		var steve = body as Steve;
+		if (steve != null)
+		{
+			steve.Bounce();
+		}
+
+	}
+
+	private void _on_SidesChecker_body_entered(object body)
+	{
+		GD.Print($"Ouch {body}");
+		// GetTree().ChangeScene("res://Level1.tscn");
+		var steve = body as Steve;
+		if (steve != null)
+		{
+			steve.Ouch(Position.x);
+		}
+	}
+
+	private void _on_Timer_timeout()
+	{
+		QueueFree();
+	}
+
+
 }

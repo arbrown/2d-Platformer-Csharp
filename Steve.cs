@@ -58,7 +58,34 @@ public class Steve : KinematicBody2D
 	{
 		coins++;
 	}
+
+	public void Bounce()
+	{
+		velocity.y += (float)(JUMPFORCE * 0.7);
+	}
+
+	public void Ouch(float posx)
+	{
+		this.Modulate = new Color(1F, 0.3F, 0.3F, 0.3F);
+		velocity.y = (float)(JUMPFORCE * 0.5);
+		if (Position.x < posx)
+		{
+			velocity.x = -800;
+		}
+		else if (Position.x > posx)
+		{
+			velocity.x = 800;
+		}
+
+		Input.ActionRelease("left");
+		Input.ActionRelease("right");
+
+		GetNode<Timer>("Timer").Start();
+	}
+
+	private void _on_Timer_timeout()
+	{
+		GetTree().ChangeScene("res://Level1.tscn");
+	}
 }
-
-
 

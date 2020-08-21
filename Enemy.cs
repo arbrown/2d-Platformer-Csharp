@@ -92,6 +92,8 @@ public class Enemy : KinematicBody2D
 			steve.Bounce();
 		}
 
+		GetNode<AudioStreamPlayer>("SoundSquash").Play();
+
 	}
 
 	private void _on_SidesChecker_body_entered(object body)

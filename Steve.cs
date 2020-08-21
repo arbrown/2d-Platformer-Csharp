@@ -38,6 +38,7 @@ public class Steve : KinematicBody2D
 		if (Input.IsActionJustPressed("jump") && IsOnFloor())
 		{
 			velocity.y = JUMPFORCE;
+			GetNode<AudioStreamPlayer>("SoundJump").Play();
 		}
 
 		velocity.y += 30;

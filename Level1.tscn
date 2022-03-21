@@ -205,6 +205,7 @@ direction = 1
 [node name="Enemy3" parent="enemies" instance=ExtResource( 10 )]
 position = Vector2( 288, 104 )
 detectsCliffs = false
+direction = 1
 
 [node name="Steve" parent="." instance=ExtResource( 2 )]
 position = Vector2( 179.435, 251.477 )

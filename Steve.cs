@@ -7,10 +7,12 @@ public class Steve : KinematicBody2D
 	const int RUNSPEED = 400;
 	const int GRAVITY = 35;
 	const int JUMPFORCE = -1100;
-
+	
 	private State state = State.Air;
 	private int coins = 0;
 	private Vector2 velocity;
+	
+	private PackedScene fireBallScene = (PackedScene) GD.Load("res://Fireball.tscn");
 
 	public AnimatedSprite Sprite
 	{
@@ -50,6 +52,7 @@ public class Steve : KinematicBody2D
 				}
 
 				MoveAndFall();
+				Fire();
 				break;
 			case State.Floor:
 				if (!IsOnFloor())
@@ -102,6 +105,7 @@ public class Steve : KinematicBody2D
 				}
 
 				MoveAndFall();
+				Fire();
 				break;
 			case State.Ladder:
 				break;
@@ -118,6 +122,26 @@ public class Steve : KinematicBody2D
 		velocity = MoveAndSlide(velocity, Vector2.Up);
 	}
 
+	private void Fire()
+	{
+		if (Input.IsActionJustPressed("fire"))
+		{
+			var f = fireBallScene.Instance() as Fireball;
+			if (f is Fireball)
+			{
+				var direction = Sprite.FlipH ? -1 : 1;
+				f.Direction = direction;
+				GetParent().AddChild(f);
+				var pos = f.Position;
+				pos.y = Position.y;
+				pos.x = Position.x + 25 * direction;
+				f.Position = pos;
+				
+			}
+
+		}
+	}
+
 	private void _on_fallzone_body_entered(object body)
 	{
 		GetTree().ChangeScene("res://GameOver.tscn");
@@ -130,7 +154,7 @@ public class Steve : KinematicBody2D
 
 	public void Bounce()
 	{
-		velocity.y += (float) (JUMPFORCE * 0.7);
+		velocity.y = (float) (JUMPFORCE * 0.7);
 	}
 
 	public void Ouch(float posx)

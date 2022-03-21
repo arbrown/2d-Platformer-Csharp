@@ -87,10 +87,7 @@ public class Enemy : KinematicBody2D
 		GetNode<Area2D>("SidesChecker").SetCollisionMaskBit(0, false);
 		GetNode<Timer>("Timer").Start();
 		var steve = body as Steve;
-		if (steve != null)
-		{
-			steve.Bounce();
-		}
+		steve?.Bounce();
 
 		GetNode<AudioStreamPlayer>("SoundSquash").Play();
 
@@ -100,10 +97,24 @@ public class Enemy : KinematicBody2D
 	{
 		GD.Print($"Ouch {body}");
 		// GetTree().ChangeScene("res://Level1.tscn");
-		var steve = body as Steve;
-		if (steve != null)
+		var collider = body as CollisionObject2D;
+		if (collider == null)
 		{
-			steve.Ouch(Position.x);
+			return;
+		}
+		if (collider.CollisionLayer == 1)
+		{
+			var steve = body as Steve;
+			steve?.Ouch(Position.x);
+		}
+		else if (collider.CollisionLayer == 32) 
+		{
+			var fireBall = body as Fireball;
+			if (fireBall != null)
+			{
+				fireBall.QueueFree();
+				QueueFree();
+			}
 		}
 	}
 

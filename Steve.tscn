@@ -17,7 +17,7 @@ __meta__ = {
 
 [node name="Sprite" type="AnimatedSprite" parent="."]
 frames = ExtResource( 1 )
-animation = "idle"
+animation = "wall"
 playing = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -30,5 +30,12 @@ shape = SubResource( 1 )
 stream = ExtResource( 3 )
 volume_db = -8.0
 pitch_scale = 1.2
+
+[node name="WallChecker" type="RayCast2D" parent="."]
+position = Vector2( 0, 12 )
+rotation = -1.5708
+enabled = true
+cast_to = Vector2( 0, 30 )
+collision_mask = 2
 
 [connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Runtime.Serialization;
 
 public class Steve : KinematicBody2D
 {
@@ -7,10 +8,12 @@ public class Steve : KinematicBody2D
 	const int RUNSPEED = 400;
 	const int GRAVITY = 35;
 	const int JUMPFORCE = -1100;
-	
+
+	private int lastJumpDirection = 0;
 	private State state = State.Air;
 	private int coins = 0;
 	private Vector2 velocity;
+	private int direction = 1;
 	
 	private PackedScene fireBallScene = (PackedScene) GD.Load("res://Fireball.tscn");
 
@@ -19,16 +22,23 @@ public class Steve : KinematicBody2D
 		get => GetNode<AnimatedSprite>("Sprite");
 	}
 
+	public RayCast2D WallChecker => GetNode<RayCast2D>("WallChecker");
+
 	public override void _PhysicsProcess(float delta)
 	{
-		Console.WriteLine(velocity.x);
+		Console.WriteLine(IsNearWall());
 		switch (state)
 		{
 			case State.Air:
 				if (IsOnFloor())
 				{
 					state = State.Floor;
+					lastJumpDirection = 0;
 					goto case State.Floor; // Any other way to continue processing on this cycle?
+				} else if (IsNearWall())
+				{
+					state = State.Wall;
+					goto case State.Wall;
 				}
 
 				Sprite.Play("air");
@@ -51,6 +61,7 @@ public class Steve : KinematicBody2D
 					velocity.x = Mathf.Lerp(velocity.x, 0, 0.2f);
 				}
 
+				SetDirection();
 				MoveAndFall();
 				Fire();
 				break;
@@ -104,27 +115,68 @@ public class Steve : KinematicBody2D
 					GetNode<AudioStreamPlayer>("SoundJump").Play();
 				}
 
+				SetDirection();
 				MoveAndFall();
 				Fire();
 				break;
 			case State.Ladder:
 				break;
 			case State.Wall:
+				if (IsOnFloor())
+				{
+					state = State.Floor;
+					lastJumpDirection = 0;
+					goto case State.Floor;
+				}
+				else if (!IsNearWall())
+				{
+					state = State.Air;
+					goto case State.Air;
+				}
+				Sprite.Play("wall");
+
+				if (Input.IsActionPressed("jump") && 
+					((Input.IsActionPressed("left") && direction == 1) 
+					||(Input.IsActionPressed("right") && direction == -1))
+					&& lastJumpDirection != direction)
+				{
+					lastJumpDirection = direction;
+					velocity.x = 450 * -direction;
+					velocity.y  = JUMPFORCE * 0.7f;
+					GetNode<AudioStreamPlayer>("SoundJump").Play();
+					state = State.Air;
+				}
+				
+				MoveAndFall(true);
 				break;
 			default:
 				throw new ArgumentOutOfRangeException();
 		}
 	}
 
-	private void MoveAndFall()
+	private void MoveAndFall(bool slowFall = false)
 	{
-		velocity.y += 30;
+		velocity.y += GRAVITY;
+		if (slowFall)
+		{
+			velocity.y = Mathf.Clamp(velocity.y, JUMPFORCE, 200);
+		}
 		velocity = MoveAndSlide(velocity, Vector2.Up);
 	}
 
+	private void SetDirection()
+	{
+		direction = Sprite.FlipH ? -1 : 1;
+		WallChecker.RotationDegrees = 90 * -direction;
+	}
+
+	private bool IsNearWall()
+	{
+		return WallChecker.IsColliding();
+	}
 	private void Fire()
 	{
-		if (Input.IsActionJustPressed("fire"))
+		if (Input.IsActionJustPressed("fire") && !IsNearWall())
 		{
 			var f = fireBallScene.Instance() as Fireball;
 			if (f is Fireball)

@@ -20,6 +20,7 @@
     <Compile Include="Enemy.cs" />
     <Compile Include="Fireball.cs" />
     <Compile Include="HUD.cs" />
+    <Compile Include="LadderTop.cs" />
     <Compile Include="MainMenuButton.cs" />
     <Compile Include="PlayButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
